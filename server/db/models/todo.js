@@ -6,12 +6,11 @@ const ToDoSchema = new Schema({
         type: String,
         trim: true,
         required: true,
-        minLength: 12,
+        minLength: 2,
         // uniqe: true
     },
     completed: {
         type: Boolean,
-        default: false
     },
     completedAt: {
         type: Number,

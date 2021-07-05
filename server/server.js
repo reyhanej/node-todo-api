@@ -29,15 +29,28 @@ app.get("/todos", (req, res) => {
         res.send({ todos })
     }, (e) => res.status(404).send(e))
 })
-app.get("/todos:id", (req, res) => {
-    const id = req.params.id
-    if (!ObjectID.isValid(id)) { return res.status(404).send() }
-    ToDo.findById(id).then(todo => {
-        if (!todo) return res.status(404).send()
-        res.send({ todo })
-    }).catch(e => res.status(400).send(e))
+app.get("/todos/:id", async(req, res) => {
+    try {
+        const id = req.params.id
+        if (!ObjectID.isValid(id)) { return res.status(404).send("invalid object id") }
+        const result = await ToDo.findById(id)
+        res.send(result)
+    } catch (e) {
+        res.status(404)
+        res.send(err, "couldn`t find document")
+    }
 })
-
+app.delete("/todos/:id", async(req, res) => {
+    try {
+        const id = req.params.id
+        if (!ObjectID.isValid(id)) { return res.status(404).send("invalid object id") }
+        const result = await ToDo.findOneAndDelete(id)
+        res.send(result)
+    } catch (err) {
+        res.status(404)
+        res.send(err)
+    }
+})
 app.listen(3000, () => console.log("server on 3000 port is running"))
 
 module.exports = {
