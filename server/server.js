@@ -96,17 +96,17 @@ app.patch("/todos/:id", async(req, res) => {
 
 //     }
 // })
-app.post('/users', (req, res) => {
-    var body = _.pick(req.body, ['email', 'password', 'username']);
-    var user = new User(body);
-
-    user.save().then(() => {
-        return user.generateAuthToken();
-    }).then((token) => {
+app.post('/users', async (req, res) => {
+    try{
+        const body = _.pick(req.body, ['email', 'password', 'username']);
+        const user = new User(body);
+        const token = await user.generateAuthToken();
+        await user.save();
         res.header('x-auth', token).send(user)
-    }).catch((e) => {
-        res.status(400).send(e)
-    })
+    }catch(e){
+        console.log('err' ,e)
+        res.status(500).send(e)
+    }
 })
 
 app.listen(3000, () => console.log("server on 3000 port is running"))
